@@ -1,0 +1,107 @@
+Build serverless, full stack applications in Azure
+
+
+Powershell
+PS /Users/s005089> (Invoke-WebRequest -Uri "https://ipinfo.io/ip").Content
+72.107.239.10  
+
+# Collect password 
+$adminSqlLogin = "cloudadmin"
+
+password:  shnozWux8t8$wheeZY
+
+Server=tcp:bus-server528590.database.windows.net,1433;Initial Catalog=bus-db;Persist Security Info=False;User ID=cloudadmin;Password=shnozWux8t8$wheeZY;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+
+---0--0----
+
+1
+
+# Collect password 
+$adminSqlLogin = "cloudadmin"
+$password = Read-Host "Your username is 'cloudadmin'. Please enter a password for your Azure SQL Database server that meets the password requirements"
+# Prompt for local ip address
+$ipAddress = Read-Host "Disconnect your VPN, open PowerShell on your machine and run '(Invoke-WebRequest -Uri "https://ipinfo.io/ip").Content'. Please enter the value (include periods) next to 'Address': "
+Write-Host "Password and IP Address stored"
+
+2
+
+# Get resource group and location and random string
+$resourceGroupName = "pjeBuildServerlessTraining"
+$resourceGroup = Get-AzResourceGroup | Where ResourceGroupName -like $resourceGroupName
+$uniqueID = Get-Random -Minimum 100000 -Maximum 1000000
+$location = "centralus"
+# The logical server name has to be unique in the system
+$serverName = "bus-server$($uniqueID)"
+# The sample database name
+$databaseName = "bus-db"    
+Write-Host "Please note your unique ID for future exercises in this module:"  
+Write-Host $uniqueID
+Write-Host "Your resource group name is:"
+Write-Host $resourceGroupName
+Write-Host "Your resources were deployed in the following region:"
+Write-Host $location
+Write-Host "Your server name is:"
+Write-Host $serverName
+
+Fix:  pjeBuildServerlessTraining
+$rg = Get-AzureRMResourceGroup -Name $resourceGroupName
+$rg.location
+pjeBuildServerlessTraining
+
+3
+
+# Create a new server with a system wide unique server name
+$server = New-AzSqlServer -ResourceGroupName $resourceGroupName `
+    -ServerName $serverName `
+    -Location $location `
+    -SqlAdministratorCredentials $(New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $adminSqlLogin, $(ConvertTo-SecureString -String $password -AsPlainText -Force))
+# Create a database
+$database = New-AzSqlDatabase  -ResourceGroupName $resourceGroupName `
+    -ServerName $serverName `
+    -DatabaseName $databaseName `
+    -Edition "GeneralPurpose" -Vcore 4 -ComputeGeneration "Gen5" `
+    -ComputeModel Serverless -MinimumCapacity 0.5
+Write-Host "Database deployed."
+
+
+---0--0----
+
+Write-Host $uniqueID
+528590
+
+Your resource group name is:
+pjeBuildServerlessTraining
+
+Your server name is:
+bus-server528590
+
+Your resources were deployed in the following region:
+Central US
+
+
+PS /home/patrick> # Get resource group and location and random string
+PS /home/patrick> $resourceGroupName = "pjeBuildServerlessTraining"
+PS /home/patrick> $resourceGroup = Get-AzResourceGroup | Where ResourceGroupName -like $resourceGroupName
+PS /home/patrick> $uniqueID = Get-Random -Minimum 100000 -Maximum 1000000
+PS /home/patrick> $location = $resourceGroup.Location
+PS /home/patrick> # The logical server name has to be unique in the system
+PS /home/patrick> $serverName = "bus-server$($uniqueID)"
+PS /home/patrick> # The sample database name
+PS /home/patrick> $databaseName = "bus-db"
+PS /home/patrick> Write-Host "Please note your unique ID for future exercises in this module:"
+Please note your unique ID for future exercises in this module:
+PS /home/patrick> Write-Host $uniqueID
+528590
+PS /home/patrick> Write-Host "Your resource group name is:"
+Your resource group name is:
+PS /home/patrick> Write-Host $resourceGroupName
+pjeBuildServerlessTraining
+PS /home/patrick> Write-Host "Your resources were deployed in the following region:"
+Your resources were deployed in the following region:
+PS /home/patrick> Write-Host $location
+
+PS /home/patrick> Write-Host "Your server name is:"
+Your server name is:
+PS /home/patrick> Write-Host $serverName
+bus-server528590
+PS /home/patrick>
